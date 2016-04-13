@@ -182,7 +182,7 @@ public class MyRestService {
 
 						bestNames.add(bestMatches.get(i).getName());
 						bestURLS.add(bestMatches.get(i).getUrl());
-					//	IMDBDetials.add(getImdbData(bestMatches.get(i).getName()));
+						IMDBDetials.add(getImdbData(bestMatches.get(i).getName()));
 						tempList.add(bestMatches.get(i).getName());
 						++count;
 						
