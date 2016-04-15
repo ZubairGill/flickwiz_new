@@ -93,6 +93,7 @@ public class MyRestService {
 			
 			
 			CSVReader csvReader = new CSVReader(new FileReader("movieFile/imdbfeatures.csv"), ',');
+			//CSVReader csvReader = new CSVReader(new FileReader("movieFile/sample.csv"), ',');
 			String[] row;
 			
 			int rw = 0;
@@ -109,6 +110,9 @@ public class MyRestService {
 			SimilarityIndex bestMatch=new SimilarityIndex();
 			
 			
+			
+			
+			
 			while((row=csvReader.readNext())!=null)
 			{
 				////////Check the details ////
@@ -121,7 +125,7 @@ public class MyRestService {
 					cl=Integer.parseInt(row[4]);
 					channel=row[5];
 					finalMat=MatDecoderAndEncoder.decode(mat,rw,cl,Integer.parseInt(channel));
-					//System.out.println( "[ "+name+" ]"+"[ "+url+" ]");
+					System.out.println( "[ "+name+" ]"+"[ "+url+" ]");
 					if(finalMat != null){
 						long startt=System.currentTimeMillis();
 						
@@ -131,9 +135,9 @@ public class MyRestService {
 				
 					
 						
-						if(similarityRatio<similarity)
+						//if(similarityRatio<similarity)
 						{
-							similarity=similarityRatio;
+							//similarity=similarityRatio;
 							//bestMatch.setIndex(similarityRatio);
 							//bestMatch.setName(name);
 							//bestMatch.setUrl(url);
@@ -164,10 +168,6 @@ public class MyRestService {
 			
 			Collections.sort(bestMatches, indexComparator);
 			
-			int len=0;
-			if(bestMatches.size()>6)
-				{len=5;}else{
-			len=bestMatches.size();}
 			bestURLS.clear();
 			bestNames.clear();
 			IMDBDetials.clear();
