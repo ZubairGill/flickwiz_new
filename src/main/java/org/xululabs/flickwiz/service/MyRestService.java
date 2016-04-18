@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,6 +36,7 @@ import org.xululabs.flickwiz.service.coreclassess.Converter;
 import org.xululabs.flickwiz.service.coreclassess.FeaturesORB;
 import org.xululabs.flickwiz.service.coreclassess.MatDecoderAndEncoder;
 import org.xululabs.flickwiz.service.coreclassess.SimilarityIndex;
+import org.xululabs.flickwiz.service.coreclassess.URLFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -51,7 +53,20 @@ import com.opencsv.CSVReader;
 @RequestMapping(value = "/flickwiz")
 @ComponentScan("serverPack")
 public class MyRestService {
-
+	static SimilarityIndex best[]={
+	
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc")};
+	
+	
 	private static final LinkedList<URL> posterUrls = new LinkedList<URL>();
 	private static final LinkedList<String> posterNames = new LinkedList<String>();
 	private static final LinkedList<Mat> posters_TrainDescriptors = new LinkedList<Mat>();
@@ -125,7 +140,7 @@ public class MyRestService {
 					cl=Integer.parseInt(row[4]);
 					channel=row[5];
 					finalMat=MatDecoderAndEncoder.decode(mat,rw,cl,Integer.parseInt(channel));
-					System.out.println( "[ "+name+" ]"+"[ "+url+" ]");
+					//System.out.println( "[ "+name+" ]"+"[ "+url+" ]");
 					if(finalMat != null){
 						long startt=System.currentTimeMillis();
 						
@@ -134,14 +149,14 @@ public class MyRestService {
 					
 				
 					
-						
-						//if(similarityRatio<similarity)
+						double temp=getMaxValue(best);
+						if(similarityRatio<temp)
 						{
-							//similarity=similarityRatio;
-							//bestMatch.setIndex(similarityRatio);
-							//bestMatch.setName(name);
-							//bestMatch.setUrl(url);
-							bestMatches.add(new SimilarityIndex(similarityRatio, url, name));
+							//bestMatches.add(new SimilarityIndex(similarityRatio, url, name));
+						
+							int pos=getMaxPosition(temp);
+							best[pos]=new SimilarityIndex(similarityRatio, url, name);
+							
 							
 						} 
 						
@@ -158,6 +173,12 @@ public class MyRestService {
 					}*/
 			}
 			
+			bestMatches=Arrays.asList(best);
+			for(int j=0;j<bestMatches.size();j++)
+			{
+				System.err.println(bestMatches.get(j).toString());
+				
+			}
 			
 			Comparator<SimilarityIndex> indexComparator = new Comparator<SimilarityIndex>() {
 				public int compare(SimilarityIndex index1,
@@ -194,6 +215,8 @@ public class MyRestService {
 						break;
 					}
 				}
+				
+				
 
 			} catch (Exception e) {
 				System.out.println(e.getMessage() + " Passing data to List");
@@ -860,4 +883,27 @@ public class MyRestService {
 		return simIndex;
 	}
 	
+	public static double getMaxValue(SimilarityIndex[] array){  
+	    double maxValue = array[0].getIndex();  
+	    
+	    for(int i=1;i<best.length;i++){  
+	    
+	    	if(best[i].getIndex() > maxValue){  
+	    		maxValue =array[i].getIndex();  	
+	    	}  
+	    }  
+	   return maxValue;  
+			}
+	
+	private static int getMaxPosition(double maxValue) {
+		   
+		int position=-1;
+	    for(int i=0;i<best.length;i++){  
+	    
+	    	if(best[i].getIndex()== maxValue){  
+	    		position=i;
+	    	}  
+	    }  
+	   return position;  
+	}
 }

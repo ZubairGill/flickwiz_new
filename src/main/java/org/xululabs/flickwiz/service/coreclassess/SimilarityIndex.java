@@ -1,5 +1,6 @@
 package org.xululabs.flickwiz.service.coreclassess;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class SimilarityIndex {
@@ -8,7 +9,9 @@ public class SimilarityIndex {
 	private URL url;
 	private String name;
 	
-	public SimilarityIndex(){}
+	public SimilarityIndex() throws MalformedURLException{}
+	
+	
 	public SimilarityIndex(Double index, URL url, String name){
 		this.index = index;
 		this.url = url;
