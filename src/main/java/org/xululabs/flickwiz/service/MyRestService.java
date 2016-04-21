@@ -55,6 +55,12 @@ import com.opencsv.CSVReader;
 public class MyRestService {
 	static SimilarityIndex best[]={
 	
+		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
+
 			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
 			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
 			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
@@ -174,11 +180,7 @@ public class MyRestService {
 			}
 			
 			bestMatches=Arrays.asList(best);
-			for(int j=0;j<bestMatches.size();j++)
-			{
-				System.err.println(bestMatches.get(j).toString());
-				
-			}
+			
 			
 			Comparator<SimilarityIndex> indexComparator = new Comparator<SimilarityIndex>() {
 				public int compare(SimilarityIndex index1,
@@ -221,7 +223,11 @@ public class MyRestService {
 			} catch (Exception e) {
 				System.out.println(e.getMessage() + " Passing data to List");
 			}
+			for(int j=0;j<bestMatches.size();j++)
+			{
+				System.err.println(bestMatches.get(j).toString());
 				
+			}
 				
 				//System.out.println(bestMatch.toString());
 				long end=System.currentTimeMillis();
@@ -232,120 +238,7 @@ public class MyRestService {
 		}
 		
 		
-		
-		
-		
-		
-		
-		/*
-		 * This part read the file...
-		 * 	
-		 */
-		/*
-		FeaturesORB orb = new FeaturesORB();
-		queryDescriptor = new Mat();
-		matches = new MatOfDMatch();
-		List<SimilarityIndex> similarIndices = new ArrayList<SimilarityIndex>();
-		try {
-			byte[] imageBytes = javax.xml.bind.DatatypeConverter
-					.parseBase64Binary(uploadedImage.getBase64Code());
-			BufferedImage img = ImageIO.read(new ByteArrayInputStream(
-					imageBytes));
 
-			
-			
-			File outputfile = new File("image.jpg");
-			ImageIO.write(img, "jpg", outputfile);
-			System.out.println("filesaved : "+outputfile.getAbsolutePath());
-			
-			System.out.println(img.getWidth() + " * "+ img.getHeight());
-			
-			descriptorMatcher = DescriptorMatcher
-					.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
-			queryDescriptor = orb.getORBFeaturesDescriptorMat(Converter
-					.img2Mat(img));
-
-			
-			
-			
-			for (int i = 0; i < posters_TrainDescriptors.size(); i++) {
-				descriptorMatcher.clear();
-				trainDescriptor = posters_TrainDescriptors.get(i);
-				descriptorMatcher.match(queryDescriptor, trainDescriptor,
-						matches);
-				List<DMatch> matchesList = matches.toList();
-
-				Double max_dist = 0.0;
-				Double min_dist = 100.0;
-
-				for (int j = 0; j < queryDescriptor.rows(); j++) {
-					Double dist = (double) matchesList.get(j).distance;
-					if (dist < min_dist)
-						min_dist = dist;
-					if (dist > max_dist)
-						max_dist = dist;
-				}
-
-				LinkedList<DMatch> good_matches = new LinkedList<>();
-				double goodMatchesSum = 0.0;
-
-				// good match = distance > 2*min_distance ==> put them in a list
-				for (int k = 0; k < queryDescriptor.rows(); k++) {
-					if (matchesList.get(k).distance < Math.max(2 * min_dist,0.02)) {
-						good_matches.addLast(matchesList.get(k));
-						goodMatchesSum += matchesList.get(k).distance;
-					}
-				}
-
-				double simIndex = (double) goodMatchesSum/ (double) good_matches.size();
-				similarIndices.add(new SimilarityIndex(simIndex, posterUrls.get(i), posterNames.get(i)));
-			}
-			
-			Comparator<SimilarityIndex> indexComparator = new Comparator<SimilarityIndex>() {
-				public int compare(SimilarityIndex index1,
-						SimilarityIndex index2) {
-					return index1.getIndex().compareTo(index2.getIndex());
-				}
-			};
-
-			Collections.sort(similarIndices, indexComparator);
-			bestURLS.clear();
-			bestNames.clear();
-			IMDBDetials.clear();
-			tempList.clear();
-
-			try {
-				count=0;
-				for (int i = 0; i < similarIndices.size(); i++) {
-						
-					if (!tempList.contains(similarIndices.get(i).getName()
-							.toString())) {
-
-						bestNames.add(similarIndices.get(i).getName());
-						bestURLS.add(similarIndices.get(i).getUrl());
-						IMDBDetials.add(getImdbData(similarIndices.get(i)
-								.getName()));
-						tempList.add(similarIndices.get(i).getName());
-						++count;
-						
-						
-					}
-					if (count == 5) {
-						System.out.println("Total movies in result : "+count);
-						count = 0;
-						break;
-					}
-				}
-
-			} catch (Exception e) {
-				System.out.println(e.getMessage() + " Passing data to List");
-			}
-
-		} catch (Exception ex) {
-			System.out
-					.println("Base64Code to bufferedImage conversion exception");
-			System.out.println(ex.getMessage());
-		}*/
 		return new ResponseModel(bestNames, bestURLS, IMDBDetials);
 	}
 
@@ -380,6 +273,7 @@ public class MyRestService {
 					+ map.get("imdbID").toString() + "/");
 
 		} catch (Exception e) {
+			System.err.println("The Error is occured while getting data from IMDB..");
 			System.out.println(e.getMessage().toString());
 		}
 		return dataIMDB;
