@@ -53,26 +53,7 @@ import com.opencsv.CSVReader;
 @RequestMapping(value = "/flickwiz")
 @ComponentScan("serverPack")
 public class MyRestService {
-	static SimilarityIndex best[]={
-	
-		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-		new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc"),
-			new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc")};
-	
-	
+	static SimilarityIndex best[]=new SimilarityIndex[15];
 	private static final LinkedList<URL> posterUrls = new LinkedList<URL>();
 	private static final LinkedList<String> posterNames = new LinkedList<String>();
 	private static final LinkedList<Mat> posters_TrainDescriptors = new LinkedList<Mat>();
@@ -130,6 +111,7 @@ public class MyRestService {
 			List<SimilarityIndex> bestMatches=new ArrayList<SimilarityIndex>();
 			SimilarityIndex bestMatch=new SimilarityIndex();
 			
+			loadArrayWithDefault();
 			
 			
 			
@@ -179,8 +161,10 @@ public class MyRestService {
 					}*/
 			}
 			
-			bestMatches=Arrays.asList(best);
 			
+			bestMatches=Arrays.asList(best);
+		
+
 			
 			Comparator<SimilarityIndex> indexComparator = new Comparator<SimilarityIndex>() {
 				public int compare(SimilarityIndex index1,
@@ -213,6 +197,7 @@ public class MyRestService {
 					}
 					if (count == 5) {
 						System.out.println("Total movies in result : "+count);
+						
 						count = 0;
 						break;
 					}
@@ -800,4 +785,28 @@ public class MyRestService {
 	    }  
 	   return position;  
 	}
+	
+	private static void loadArrayWithDefault()
+	{
+		
+		 
+		best[0]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[1]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[2]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[3]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[4]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+
+		best[5]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[6]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[7]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[8]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[9]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[10]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[11]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[12]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[13]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+		best[14]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
+
+	}
+	
 }
