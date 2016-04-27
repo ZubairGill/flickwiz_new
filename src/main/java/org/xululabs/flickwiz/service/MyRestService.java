@@ -55,16 +55,12 @@ import com.opencsv.CSVReader;
 public class MyRestService {
 	
 	
-	private SimilarityIndex best[];
-	private static final LinkedList<URL> posterUrls = new LinkedList<URL>();
-	private static final LinkedList<String> posterNames = new LinkedList<String>();
-	private static final LinkedList<Mat> posters_TrainDescriptors = new LinkedList<Mat>();
-	private LinkedList<URL> bestURLS = new LinkedList<URL>();
-	private LinkedList<String> bestNames = new LinkedList<String>();
-	private LinkedList<LinkedList<String>> IMDBDetials = new LinkedList<LinkedList<String>>();
-	private final ArrayList<LinkedList<String>> movieList = new ArrayList<LinkedList<String>>();
-	private ArrayList<String> tempList = new ArrayList();
-	private int count = 0;
+	//private SimilarityIndex best[];
+	//private static final LinkedList<URL> posterUrls = new LinkedList<URL>();
+	//private static final LinkedList<String> posterNames = new LinkedList<String>();
+	//private static final LinkedList<Mat> posters_TrainDescriptors = new LinkedList<Mat>();
+	
+	
 
 	private DescriptorMatcher descriptorMatcher;
 	private FeaturesORB featuresORB;
@@ -79,7 +75,7 @@ public class MyRestService {
 			@RequestBody FlickwizImage uploadedImage) throws IOException {
 		System.out.println("Request Received on path /uploadImage" +"[ "+ Calendar.getInstance().getTime()+" ]" );
 		System.out.println(uploadedImage);
-		best=new SimilarityIndex[15];
+		SimilarityIndex best[]=new SimilarityIndex[15];
 		best[0]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
 		best[1]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
 		best[2]=new SimilarityIndex(101.0,URLFactory.create("http://ia.media-imdb.com/images/M/MV5BMjQwOTc0Mzg3Nl5BMl5BanBnXkFtZTgwOTg3NjI2NzE@._V1__SX640_SY720_.jpg"),"abc");
@@ -98,7 +94,18 @@ public class MyRestService {
 		
 		Loader.init();
 		
+		for (int i=0;i<best.length;i++)
+		{
+			System.out.println("The value of the array at request starting" +best[i].toString() );
+		}
 		
+		 int count = 0;
+		
+		LinkedList<URL> bestURLS = new LinkedList<URL>();
+		LinkedList<String> bestNames = new LinkedList<String>();
+		LinkedList<LinkedList<String>> IMDBDetials = new LinkedList<LinkedList<String>>();
+		
+		ArrayList<String> tempList = new ArrayList();
 		SimilarityIndex posterSimilarity=new SimilarityIndex();
 		FeaturesORB orb = new FeaturesORB();
 		Mat queryDescriptor = new Mat();
@@ -156,7 +163,7 @@ public class MyRestService {
 						{
 							//bestMatches.add(new SimilarityIndex(similarityRatio, url, name));
 						
-							int pos=getMaxPosition(temp);
+							int pos=getMaxPosition(temp,best);
 							best[pos]=new SimilarityIndex(similarityRatio, url, name);
 							
 							
@@ -173,6 +180,12 @@ public class MyRestService {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}*/
+			}
+		
+			
+			for (int i=0;i<best.length;i++)
+			{
+				System.out.println("The value of the array at request starting" +best[i].toString() );
 			}
 			
 			
@@ -279,65 +292,15 @@ public class MyRestService {
 		return dataIMDB;
 	}
 
-	/*
-	 * 	This function read the movies poster from the CSV file and extract features and store them in the LinkedList.
-	 */
-	private void allFeaturesExtraction() throws IOException {
-		int counter = 0;
-		// Loader.init();
-		featuresORB = new FeaturesORB();
-		String[] nextLine;
-		// String checkString = new String();
-		
-		CSVReader reader = new CSVReader(new FileReader("movieFile/movies.csv"), ',','\"', 1);
-		//List content=reader.readAll();
 	
-		//String[] row=null;
-		
-		//for (Object object : content) {
-		 //   row = (String[]) object; 
-		  //  System.out.println(Arrays.asList(row));
-		//}
-	
-		while ((nextLine = reader.readNext()) != null) {
-			// nextLine[] is an array of values from the line
-			
-			String imageUrl = (String.valueOf(nextLine[1].charAt(0)).equals(
-					"\"") ? nextLine[1].substring(1, nextLine[1].length() - 1)
-					: nextLine[1]);
-
-			String imageName = (String.valueOf(nextLine[0].charAt(0)).equals(
-					"\"") ? nextLine[0].substring(1, nextLine[0].length() - 1)
-					: nextLine[0]);
-
-			
-			
-			Mat mat=new Mat();
-			mat=Converter.img2Mat(ImageIO.read(new URL(imageUrl)));
-			Imgproc.resize(mat, mat, new Size(450,600));
-			posters_TrainDescriptors.add(counter, featuresORB
-					.getORBFeaturesDescriptorMat(mat));
-
-			/*
-			 * You can uncomment these lines if you to see that csv is parsed correctly
-			 */
-			System.out.println("Name ==> "+imageName );
-			System.out.println("Url ==> "+imageUrl );
-			posterNames.add(counter, imageName);
-			posterUrls.add(counter, new URL(imageUrl));
-			++counter;
-
-		} 
-		
-		reader.close();
-	}
-
 	/*
 	 * 	This service provides the list of movies depending upon the Genre type passed as input parameter.
 	 */
 	@RequestMapping(value = "/genredetail", method = RequestMethod.GET)
 	public @ResponseBody GenreModel movieListByGenre(String genre) {
 
+		ArrayList<LinkedList<String>> movieList = new ArrayList<LinkedList<String>>();
+		
 		System.out.println("Request Received on path /genredetail");
 		System.out.println(genre);
 
@@ -777,19 +740,19 @@ public class MyRestService {
 		return simIndex;
 	}
 	
-	public  double getMaxValue(SimilarityIndex[] array){  
-	    double maxValue = array[0].getIndex();  
+	public  double getMaxValue(SimilarityIndex[] best){  
+	    double maxValue = best[0].getIndex();  
 	    
 	    for(int i=1;i<best.length;i++){  
 	    
 	    	if(best[i].getIndex() > maxValue){  
-	    		maxValue =array[i].getIndex();  	
+	    		maxValue =best[i].getIndex();  	
 	    	}  
 	    }  
 	   return maxValue;  
 			}
 	
-	private  int getMaxPosition(double maxValue) {
+	private  int getMaxPosition(double maxValue, SimilarityIndex[] best) {
 		   
 		int position=-1;
 	    for(int i=0;i<best.length;i++){  
